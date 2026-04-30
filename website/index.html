@@ -1,0 +1,335 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>温州乐翼 - 数码产品商城</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="container header-inner">
+        <div class="logo" @click="goHome">
+          <img src="/logo-wenzhou-leyi.png" alt="温州乐翼" style="height:40px;width:auto;">
+        </div>
+        <nav class="nav">
+          <a href="#" :class="{active: view==='home'}" @click.prevent="goHome">首页</a>
+          <a href="#" :class="{active: view==='products'}" @click.prevent="view='products'">全部商品</a>
+          <a href="#" :class="{active: view==='category'}" @click.prevent="view='category'">分类浏览</a>
+        </nav>
+        <div class="search-box">
+          <input type="text" v-model="searchKeyword" placeholder="搜索商品..." @keyup.enter="doSearch">
+          <button @click="doSearch">搜索</button>
+        </div>
+        <div class="header-right">
+          <div class="cart-btn" @click="view='cart'" title="购物车">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;">
+              <circle cx="9" cy="21" r="1"></circle>
+              <circle cx="20" cy="21" r="1"></circle>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+            <span class="cart-badge" v-if="cartCount>0">{{cartCount}}</span>
+          </div>
+          <button class="user-btn" v-if="!user" @click="view='login'">登录</button>
+          <button class="user-btn" v-else @click="view='user'">{{user.username}}</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+      <!-- Home View -->
+      <div v-if="view==='home'">
+        <section class="banner-section">
+          <div class="banner">
+            <div class="banner-slide">
+              <h2>数码好物 品质生活</h2>
+              <p>精选数码产品，正品保障，售后无忧</p>
+            </div>
+          </div>
+        </section>
+        
+        <section class="category-nav">
+          <div class="category-grid">
+            <div class="category-item" v-for="cat in categories.slice(0,8)" :key="cat.id" @click="goCategory(cat.id)">
+              <div class="category-icon">{{cat.icon || '商品'}}</div>
+              <div class="category-name">{{cat.name}}</div>
+            </div>
+          </div>
+        </section>
+
+        <h2 class="section-title">热门推荐</h2>
+        <div class="product-grid">
+          <div class="product-card" v-for="p in hotProducts" :key="p.id" @click="goDetail(p.id)">
+            <div class="product-img">手机</div>
+            <div class="product-info">
+              <div class="product-name">{{p.name}}</div>
+              <div class="product-price-row">
+                <span class="product-price">¥{{p.price}}</span>
+                <span class="product-original" v-if="p.original_price">¥{{p.original_price}}</span>
+              </div>
+            </div>
+            <button class="product-add-cart" @click.stop="addCart(p.id)">加入购物车</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products List View -->
+      <div v-if="view==='products'">
+        <h2 class="section-title">全部商品</h2>
+        <div class="product-grid">
+          <div class="product-card" v-for="p in products" :key="p.id" @click="goDetail(p.id)">
+            <div class="product-img">手机</div>
+            <div class="product-info">
+              <div class="product-name">{{p.name}}</div>
+              <div class="product-price-row">
+                <span class="product-price">¥{{p.price}}</span>
+                <span class="product-original" v-if="p.original_price">¥{{p.original_price}}</span>
+              </div>
+            </div>
+            <button class="product-add-cart" @click.stop="addCart(p.id)">加入购物车</button>
+          </div>
+        </div>
+        <div class="pagination">
+          <button :disabled="page<=1" @click="page--; loadProducts()">上一页</button>
+          <span>第 {{page}} 页</span>
+          <button @click="page++; loadProducts()">下一页</button>
+        </div>
+      </div>
+
+      <!-- Category View -->
+      <div v-if="view==='category'">
+        <h2 class="section-title">商品分类</h2>
+        <div class="category-nav">
+          <div class="category-grid">
+            <div class="category-item" v-for="cat in categories" :key="cat.id" @click="goCategory(cat.id)">
+              <div class="category-icon">{{cat.icon || '商品'}}</div>
+              <div class="category-name">{{cat.name}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail View -->
+      <div v-if="view==='detail'" class="detail-page">
+        <div class="detail-layout">
+          <div class="detail-gallery">
+            <div class="main-img">商品图片</div>
+          </div>
+          <div class="detail-info">
+            <h1 class="name">{{currentProduct.name}}</h1>
+            <div class="price">
+              ¥{{currentProduct.price}}
+              <span class="original-price" v-if="currentProduct.original_price">¥{{currentProduct.original_price}}</span>
+            </div>
+            <p class="desc">{{currentProduct.description}}</p>
+            <div class="qty-control">
+              <label>数量：</label>
+              <button @click="qty>1 && qty--">-</button>
+              <input type="number" v-model.number="qty" min="1">
+              <button @click="qty++">+</button>
+            </div>
+            <div class="detail-actions">
+              <button class="btn-cart" @click="addCart(currentProduct.id, qty)">加入购物车</button>
+              <button class="btn-buy" @click="buyNow">立即购买</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cart View -->
+      <div v-if="view==='cart'" class="cart-page">
+        <h2 class="section-title">购物车</h2>
+        <div v-if="cart.length===0" class="empty-state">
+          <div class="icon">购物车</div>
+          <p>购物车是空的，快去选购商品吧~</p>
+          <button @click="goHome" style="margin-top:16px;padding:8px 24px;background:#1890ff;color:#fff;border:none;border-radius:4px;cursor:pointer;">去购物</button>
+        </div>
+        <div v-else>
+          <table class="cart-table">
+            <thead>
+              <tr>
+                <th><input type="checkbox" v-model="selectAll"> 全选</th>
+                <th>商品信息</th>
+                <th>单价</th>
+                <th>数量</th>
+                <th>小计</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in cart" :key="item.id">
+                <td><input type="checkbox" v-model="item.selected"></td>
+                <td>
+                  <div class="cart-product">
+                    <div class="cart-product-img">商品</div>
+                    <span>{{item.name}}</span>
+                  </div>
+                </td>
+                <td>¥{{item.price}}</td>
+                <td>
+                  <div class="qty-control" style="margin-top:0;">
+                    <button @click="updateCart(item.id, item.quantity-1)">-</button>
+                    <span style="display:inline-block;width:30px;text-align:center;">{{item.quantity}}</span>
+                    <button @click="updateCart(item.id, item.quantity+1)">+</button>
+                  </div>
+                </td>
+                <td style="color:#ff4d4f;font-weight:600;">¥{{(item.price * item.quantity).toFixed(2)}}</td>
+                <td><button @click="removeCart(item.id)" style="color:#ff4d4f;background:none;border:none;cursor:pointer;">删除</button></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="cart-bottom">
+            <label><input type="checkbox" v-model="selectAll"> 全选</label>
+            <div class="cart-total">
+              已选 {{selectedCount}} 件，合计 <span class="amount">¥{{totalAmount.toFixed(2)}}</span>
+              <button class="checkout-btn" @click="checkout" :disabled="selectedCount===0">去结算</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Login View -->
+      <div v-if="view==='login'" class="login-box">
+        <h2>用户登录</h2>
+        <div class="form-group">
+          <label>用户名/手机号</label>
+          <input type="text" v-model="loginForm.username" placeholder="请输入用户名或手机号">
+        </div>
+        <div class="form-group">
+          <label>密码</label>
+          <input type="password" v-model="loginForm.password" placeholder="请输入密码">
+        </div>
+        <div class="form-group">
+          <button class="btn" @click="doLogin">登录</button>
+        </div>
+        <p style="text-align:center;color:#999;font-size:13px;">还没有账号？<a href="#" @click.prevent="view='register'">立即注册</a></p>
+      </div>
+
+      <!-- Register View -->
+      <div v-if="view==='register'" class="login-box">
+        <h2>用户注册</h2>
+        <div class="form-group">
+          <label>用户名</label>
+          <input type="text" v-model="registerForm.username" placeholder="请输入用户名">
+        </div>
+        <div class="form-group">
+          <label>密码</label>
+          <input type="password" v-model="registerForm.password" placeholder="请输入密码">
+        </div>
+        <div class="form-group">
+          <label>手机号</label>
+          <div style="display:flex;gap:8px;">
+            <input type="text" v-model="registerForm.phone" placeholder="请输入手机号" style="flex:1;">
+            <button @click="sendVerifyCode" :disabled="verifyCodeCountdown>0" style="padding:0 12px;white-space:nowrap;">
+              {{verifyCodeCountdown>0 ? verifyCodeCountdown+'秒' : '获取验证码'}}
+            </button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>短信验证码</label>
+          <input type="text" v-model="registerForm.verifyCode" placeholder="请输入短信验证码">
+        </div>
+        <div class="form-group">
+          <label>营业执照名称</label>
+          <input type="text" v-model="registerForm.businessName" placeholder="请输入营业执照上的名称">
+        </div>
+        <div class="form-group">
+          <label>门店地址</label>
+          <input type="text" v-model="registerForm.storeAddress" placeholder="请输入门店详细地址">
+        </div>
+        <div class="form-group">
+          <label>负责人姓名</label>
+          <input type="text" v-model="registerForm.contactName" placeholder="请输入负责人姓名">
+        </div>
+        <div class="form-group">
+          <button class="btn" @click="doRegister">注册</button>
+        </div>
+        <p style="text-align:center;color:#999;font-size:13px;">已有账号？<a href="#" @click.prevent="view='login'">去登录</a></p>
+      </div>
+
+      <!-- User View -->
+      <div v-if="view==='user'" class="user-page">
+        <div class="user-header-card">
+          <h2>欢迎，{{user?.username}}</h2>
+          <p>{{user?.phone || '未绑定手机号'}}</p>
+        </div>
+        <h3>企业信息</h3>
+        <div style="background:#fff;padding:16px;border-radius:8px;margin-bottom:16px;">
+          <p><strong>营业执照：</strong>{{user?.business_name || '未填写'}}</p>
+          <p><strong>门店地址：</strong>{{user?.store_address || '未填写'}}</p>
+          <p><strong>负责人：</strong>{{user?.contact_name || '未填写'}}</p>
+        </div>
+        <h3>我的订单</h3>
+        <div v-if="orders.length===0" class="empty-state">
+          <div class="icon">订单</div>
+          <p>暂无订单</p>
+        </div>
+        <div v-else>
+          <div class="order-card" v-for="order in orders" :key="order.id">
+            <div class="order-header">
+              <span>订单号：{{order.order_no}}</span>
+              <span :class="'order-status status-'+order.status">{{statusText(order.status)}}</span>
+            </div>
+            <div style="padding:12px 16px;">
+              <div v-for="item in order.items" :key="item.id" style="display:flex;gap:12px;padding:8px 0;border-bottom:1px dashed #eee;">
+                <div style="width:60px;height:60px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;">商品</div>
+                <div style="flex:1;">
+                  <div>{{item.product_name}}</div>
+                  <div style="color:#999;font-size:12px;">¥{{item.price}} x {{item.quantity}}</div>
+                </div>
+              </div>
+              <div style="text-align:right;padding-top:12px;">总计：<span style="color:#ff4d4f;font-weight:600;">¥{{order.total_amount}}</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:24px;">
+          <button class="btn" @click="logout" style="background:#f5222d;">退出登录</button>
+        </div>
+      </div>
+
+      <!-- Checkout View -->
+      <div v-if="view==='checkout'" class="order-page">
+        <h2 class="section-title">确认订单</h2>
+        <div style="background:#f8f8f8;padding:16px;border-radius:8px;margin-bottom:16px;">
+          <h4>收货地址</h4>
+          <p style="color:#666;margin-top:8px;">{{address || '暂无收货地址，请在备注中填写'}}</p>
+        </div>
+        <div v-for="item in selectedCartItems" :key="item.id" style="display:flex;gap:16px;padding:16px;border-bottom:1px solid #eee;">
+          <div style="width:80px;height:80px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;">商品</div>
+          <div style="flex:1;">
+            <div>{{item.name}}</div>
+            <div style="color:#999;font-size:13px;">¥{{item.price}} x {{item.quantity}}</div>
+          </div>
+          <div style="color:#ff4d4f;font-weight:600;">¥{{(item.price*item.quantity).toFixed(2)}}</div>
+        </div>
+        <div style="margin-top:16px;">
+          <label style="display:block;margin-bottom:8px;">订单备注</label>
+          <textarea v-model="remark" style="width:100%;height:80px;padding:12px;border:1px solid #e8e8e8;border-radius:6px;resize:none;" placeholder="请输入备注信息..."></textarea>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:24px;padding-top:16px;border-top:2px solid #e8e8e8;">
+          <span>共 {{selectedCount}} 件商品</span>
+          <div>
+            合计：<span style="color:#ff4d4f;font-size:24px;font-weight:700;">¥{{totalAmount.toFixed(2)}}</span>
+            <button class="checkout-btn" @click="submitOrder" style="margin-left:16px;">提交订单</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="brand">温州乐翼</div>
+      <p>© 2024 温州市乐翼通信有限公司 版权所有</p>
+    </footer>
+
+    <!-- Toast -->
+    <div class="toast" :class="[toastType, {show: toastShow}]">{{toastMsg}}</div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
