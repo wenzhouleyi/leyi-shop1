@@ -7,21 +7,17 @@ const router = express.Router();
 // 存储验证码（生产环境应该用Redis）
 const verifyCodes = new Map();
 
-// 发送验证码
+// 发送验证码（免验证模式 - 固定返回123456）
 router.post('/send-code', (req, res) => {
   try {
     const { phone } = req.body;
     if (!phone || !/^1[3-9]\d{9}$/.test(phone)) {
       return res.json({ code: 400, message: '请输入正确的手机号' });
     }
-    // 生成6位验证码
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
-    // 存储验证码（5分钟有效）
-    verifyCodes.set(phone, { code, time: Date.now() });
-    // TODO: 这里应该调用短信服务商API发送真实短信
-    // 目前模拟发送成功，验证码会在控制台打印
-    console.log(`[验证码] 手机号 ${phone} 的验证码是: ${code}`);
-    res.json({ code: 200, message: '验证码已发送' });
+    // 免验证模式：固定验证码 123456
+    verifyCodes.set(phone, { code: '123456', time: Date.now() });
+    console.log(`[免验证模式] 手机号 ${phone} 验证码: 123456`);
+    res.json({ code: 200, message: '验证码已发送（免验证模式，验证码为123456）' });
   } catch (e) {
     res.json({ code: 500, message: '发送失败' });
   }
@@ -38,14 +34,9 @@ router.post('/register', (req, res) => {
       return res.json({ code: 400, message: '营业执照名称、门店地址和负责人姓名不能为空' });
     }
     
-    // 验证验证码
-    const stored = verifyCodes.get(phone);
-    if (!stored || stored.code !== verifyCode) {
-      return res.json({ code: 400, message: '验证码错误或已过期' });
-    }
-    if (Date.now() - stored.time > 5 * 60 * 1000) {
-      verifyCodes.delete(phone);
-      return res.json({ code: 400, message: '验证码已过期' });
+    // 免验证模式：任意4位数字都通过
+    if (!/^\d{4,6}$/.test(verifyCode)) {
+      return res.json({ code: 400, message: '请输入验证码（任意数字即可）' });
     }
     
     // 清除验证码
