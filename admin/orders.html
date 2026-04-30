@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>订单管理 - 温州乐翼</title>
+  <link rel="stylesheet" href="https://unpkg.com/element-plus@2.4.4/dist/index.css">
+  <script src="https://unpkg.com/vue@3.4.21/dist/vue.global.prod.js"></script>
+  <script src="https://unpkg.com/element-plus@2.4.4/dist/index.full.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: "PingFang SC","Microsoft YaHei",Arial,sans-serif; background: #f0f2f5; }
+    .layout { display: flex; min-height: 100vh; }
+    .sidebar { width: 220px; background: #001529; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; z-index: 100; }
+    .sidebar-logo { height: 60px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid rgba(255,255,255,.1); color: #fff; font-size: 18px; font-weight: 600; }
+    .sidebar-logo span { color: #1890ff; margin-right: 4px; }
+    .sidebar-nav { padding: 12px 0; }
+    .nav-item { display: flex; align-items: center; padding: 12px 20px; color: rgba(255,255,255,.65); font-size: 14px; cursor: pointer; transition: all .2s; text-decoration: none; gap: 10px; }
+    .nav-item:hover, .nav-item.active { background: rgba(24,144,255,.15); color: #fff; border-right: 3px solid #1890ff; }
+    .main-content { margin-left: 220px; flex: 1; display: flex; flex-direction: column; }
+    .topbar { height: 60px; background: #fff; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+    .breadcrumb { font-size: 14px; color: #666; }
+    .page-body { padding: 24px; flex: 1; }
+    .page-title { font-size: 20px; font-weight: 600; color: #333; margin-bottom: 20px; }
+    .table-card { background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-logo"><span>乐翼</span>管理</div>
+        <nav class="sidebar-nav">
+          <a href="index.html" class="nav-item">仪表盘</a>
+          <a href="products.html" class="nav-item">商品管理</a>
+          <a href="categories.html" class="nav-item">分类管理</a>
+          <a href="orders.html" class="nav-item active">订单管理</a>
+          <a href="banners.html" class="nav-item">轮播图管理</a>
+          <a href="users.html" class="nav-item">用户管理</a>
+        </nav>
+      </aside>
+      <main class="main-content">
+        <header class="topbar">
+          <div class="breadcrumb">首页 / 订单管理</div>
+          <div><el-button size="small" @click="logout">退出登录</el-button></div>
+        </header>
+        <div class="page-body">
+          <div class="page-title">订单列表</div>
+          <div class="table-card">
+            <el-empty description="暂无订单数据"></el-empty>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script>
+    const { createApp } = Vue;
+    createApp({
+      data() { return {}; },
+      methods: {
+        logout() { localStorage.clear(); location.href = "login.html"; }
+      }
+    }).use(ElementPlus).mount("#app");
+  </script>
+</body>
+</html>
