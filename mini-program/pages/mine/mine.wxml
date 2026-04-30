@@ -1,0 +1,61 @@
+<view class="container">
+  <view class="user-header">
+    <view class="user-info">
+      <view class="avatar">👤</view>
+      <view class="user-detail" wx:if="{{user}}">
+        <text class="username">{{user.username}}</text>
+        <text class="phone">{{user.phone || '未绑定手机号'}}</text>
+      </view>
+      <view class="user-detail" wx:else>
+        <button class="btn-login" bindtap="goLogin">点击登录</button>
+      </view>
+    </view>
+  </view>
+  
+  <view class="order-entry">
+    <view class="entry-title">我的订单</view>
+    <view class="entry-list">
+      <view class="entry-item" bindtap="goOrders" data-status="pending">
+        <text class="icon">⏳</text>
+        <text>待付款</text>
+      </view>
+      <view class="entry-item" bindtap="goOrders" data-status="shipped">
+        <text class="icon">🚚</text>
+        <text>待收货</text>
+      </view>
+      <view class="entry-item" bindtap="goOrders" data-status="completed">
+        <text class="icon">✅</text>
+        <text>已完成</text>
+      </view>
+      <view class="entry-item" bindtap="goOrders" data-status="">
+        <text class="icon">📋</text>
+        <text>全部订单</text>
+      </view>
+    </view>
+  </view>
+  
+  <view class="menu-list">
+    <view class="menu-item" bindtap="goAddress">
+      <text class="icon">📍</text>
+      <text class="name">收货地址</text>
+      <text class="arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="goFav">
+      <text class="icon">⭐</text>
+      <text class="name">我的收藏</text>
+      <text class="arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="contact">
+      <text class="icon">💬</text>
+      <text class="name">联系客服</text>
+      <text class="arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="about">
+      <text class="icon">ℹ️</text>
+      <text class="name">关于我们</text>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+  
+  <button class="btn-logout" wx:if="{{user}}" bindtap="logout">退出登录</button>
+</view>
