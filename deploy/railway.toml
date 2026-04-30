@@ -1,0 +1,28 @@
+[railway]
+  plugin = "nixpacks"
+
+[build]
+  builder = "NIXPACKS"
+  
+[nixpacks]
+  plan = """
+    { pkgs ? import <nixpkgs> {} }:
+    pkgs.mkShell {
+      buildInputs = [ pkgs.nodejs_20 ];
+      shellHook = "npm install";
+    }
+  """
+
+[deploy]
+  startCommand = "node backend/server.js"
+  restartPolicyType = "ON_FAILURE"
+  restartPolicyLimit = 10
+
+[deploy.healthstone]
+  path = "/api/banners"
+  timeout = 10
+
+[settings]
+  ID = "leyi-shop"
+  REGION = "singapore"  # 新加坡节点，中国访问较快
+  PRICE = 0
