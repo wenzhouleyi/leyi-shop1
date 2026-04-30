@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>温州乐翼 - 管理员登录</title>
+  <link rel="stylesheet" href="https://unpkg.com/element-plus@2.4.4/dist/index.css">
+  <script src="https://unpkg.com/vue@3.4.21/dist/vue.global.prod.js"></script>
+  <script src="https://unpkg.com/element-plus@2.4.4/dist/index.full.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+      background: linear-gradient(135deg, #003d7a 0%, #1890ff 50%, #4fa3e0 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .login-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      padding: 40px;
+      width: 400px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    .logo { text-align: center; margin-bottom: 30px; }
+    .logo h1 { color: #0040a0; font-size: 28px; margin-bottom: 8px; }
+    .logo p { color: #666; font-size: 14px; }
+    .login-btn { width: 100%; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="login-card">
+      <div class="logo">
+        <h1>温州乐翼</h1>
+        <p>后台管理系统</p>
+      </div>
+      <el-form :model="form" :rules="rules" ref="loginForm">
+        <el-form-item prop="username">
+          <el-input v-model="form.username" placeholder="用户名" prefix-icon="User" size="large"></el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input v-model="form.password" type="password" placeholder="密码" prefix-icon="Lock" size="large" show-password></el-input>
+        </el-form-item>
+        <el-button type="primary" size="large" class="login-btn" @click="login" :loading="loading">登录</el-button>
+      </el-form>
+      <div style="text-align: center; margin-top: 20px; color: #999; font-size: 12px;">
+        演示账号: admin / admin123
+      </div>
+    </div>
+  </div>
+  <script>
+    const { createApp } = Vue;
+    const { ElMessage } = ElementPlus;
+    createApp({
+      data() {
+        return {
+          loading: false,
+          form: { username: '', password: '' },
+          rules: {
+            username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+            password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+          }
+        };
+      },
+      methods: {
+        async login() {
+          this.$refs.loginForm.validate(async (valid) => {
+            if (!valid) return;
+            this.loading = true;
+            try {
+              const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(this.form)
+              });
+              const data = await res.json();
+              if (data.code === 200) {
+                localStorage.setItem('admin_token', data.data.token);
+                localStorage.setItem('admin_user', JSON.stringify(data.data.user));
+                ElMessage.success('登录成功');
+                location.href = '/admin/';
+              } else {
+                ElMessage.error(data.message || '登录失败');
+              }
+            } catch (e) {
+              ElMessage.error('网络错误');
+            } finally {
+              this.loading = false;
+            }
+          });
+        }
+      }
+    }).use(ElementPlus).mount('#app');
+  </script>
+</body>
+</html>
