@@ -1,0 +1,60 @@
+<view class="container">
+  <view class="gallery">
+    <swiper class="swiper" indicator-dots autoplay circular>
+      <swiper-item>
+        <view class="slide-img">📱</view>
+      </swiper-item>
+    </swiper>
+  </view>
+  
+  <view class="info-section">
+    <view class="price-row">
+      <text class="price">¥{{product.price}}</text>
+      <text class="original" wx:if="{{product.original_price}}">¥{{product.original_price}}</text>
+    </view>
+    <view class="name">{{product.name}}</view>
+    <view class="desc">{{product.description}}</view>
+  </view>
+  
+  <view class="spec-section">
+    <view class="spec-title">规格选择</view>
+    <view class="spec-list">
+      <view class="spec-item active">默认规格</view>
+    </view>
+  </view>
+  
+  <view class="qty-section">
+    <text>数量</text>
+    <view class="qty-control">
+      <text bindtap="changeQty" data-d="-1">-</text>
+      <input type="number" value="{{qty}}" disabled/>
+      <text bindtap="changeQty" data-d="1">+</text>
+    </view>
+  </view>
+  
+  <view class="detail-tab">
+    <view class="tab-nav">
+      <text class="active">商品详情</text>
+    </view>
+    <view class="tab-content">
+      {{product.description}}
+    </view>
+  </view>
+  
+  <view class="bottom-bar">
+    <view class="icon-btn" bindtap="goHome">
+      <text>🏠</text>
+      <text>首页</text>
+    </view>
+    <view class="icon-btn" bindtap="goCart">
+      <text>🛒</text>
+      <text>购物车</text>
+    </view>
+    <view class="icon-btn" bindtap="contact">
+      <text>💬</text>
+      <text>客服</text>
+    </view>
+    <button class="btn-cart" bindtap="addCart">加入购物车</button>
+    <button class="btn-buy" bindtap="buyNow">立即购买</button>
+  </view>
+</view>
