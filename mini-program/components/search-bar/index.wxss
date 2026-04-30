@@ -1,0 +1,41 @@
+/**
+ * 搜索栏组件样式
+ */
+.search-bar {
+  width: 100%;
+  padding: 0 24rpx;
+}
+
+.search-input-wrap {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 32rpx;
+  padding: 16rpx 24rpx;
+  height: 64rpx;
+}
+
+.search-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333333;
+  height: 100%;
+}
+
+.search-placeholder {
+  color: #cccccc;
+}
+
+.clear-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-left: 12rpx;
+  flex-shrink: 0;
+}
