@@ -1,0 +1,19 @@
+# Render.com 部署配置
+# https://render.com/docs/deploy-node-express
+services:
+  - type: web
+    name: leyi-shop
+    env: node
+    region: singapore
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /api/banners
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
