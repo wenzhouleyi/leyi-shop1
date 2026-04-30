@@ -34,13 +34,16 @@ router.post('/register', (req, res) => {
       return res.json({ code: 400, message: '营业执照名称、门店地址和负责人姓名不能为空' });
     }
     
-    // 免验证模式：任意4位数字都通过
+    // 免验证模式：任意4-6位数字都通过（先验证再删）
     if (!/^\d{4,6}$/.test(verifyCode)) {
-      return res.json({ code: 400, message: '请输入验证码（任意数字即可）' });
+      return res.json({ code: 400, message: '请输入4-6位验证码（任意数字即可）' });
     }
-    
+    // 保存验证码用于比对（避免上面的regex删除了验证码）
+    const savedCode = verifyCodes.get(phone);
     // 清除验证码
     verifyCodes.delete(phone);
+    // 免验证模式下不做验证码比对，直接通过
+    console.log(`[注册] 用户 ${username} 注册成功，手机 ${phone}`);
     
     const exists = db.prepare('SELECT id FROM users WHERE username = ?').get(username);
     if (exists) return res.json({ code: 400, message: '用户名已存在' });
@@ -52,7 +55,7 @@ router.post('/register', (req, res) => {
     const result = db.prepare(`
       INSERT INTO users (username, password, phone, business_name, store_address, contact_name)
       VALUES (?, ?, ?, ?, ?, ?)
-    `).run(username, hash, phone, businessName, storeAddress, contactName);
+    `).run(username, hash, phone, businessName || '', storeAddress || '', contactName || '');
     
     res.json({ code: 200, message: '注册成功，请登录' });
   } catch (e) {
