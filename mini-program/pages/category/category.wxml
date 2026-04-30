@@ -1,0 +1,33 @@
+<view class="container">
+  <view class="search-bar">
+    <view class="search-input" bindtap="goSearch">
+      <text class="icon">🔍</text>
+      <text class="placeholder">搜索商品</text>
+    </view>
+  </view>
+  
+  <view class="category-layout">
+    <scroll-view class="category-sidebar" scroll-y>
+      <view class="sidebar-item {{currentId==item.id?'active':''}}" wx:for="{{categories}}" wx:key="id" bindtap="selectCategory" data-id="{{item.id}}">
+        {{item.name}}
+      </view>
+    </scroll-view>
+    <scroll-view class="category-content" scroll-y>
+      <view class="subcategory-list">
+        <view class="subcategory-item" wx:for="{{subCategories}}" wx:key="id" bindtap="goProducts" data-id="{{item.id}}">
+          <view class="sub-icon">{{item.icon || '📦'}}</view>
+          <text>{{item.name}}</text>
+        </view>
+      </view>
+      <view class="product-list">
+        <view class="product-item" wx:for="{{products}}" wx:key="id" bindtap="goDetail" data-id="{{item.id}}">
+          <view class="product-img">📱</view>
+          <view class="product-info">
+            <text class="product-name">{{item.name}}</text>
+            <text class="product-price">¥{{item.price}}</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>
