@@ -1,0 +1,18 @@
+{
+  "name": "leyi-shop",
+  "version": "1.0.0",
+  "description": "温州乐翼通信电商系统",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node backend/server.js",
+    "build": "echo 'Static site - no build needed'",
+    "setup": "npm install && node backend/init-db.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": ["ecommerce", "shop", "leyi"],
+  "author": "温州乐翼",
+  "license": "MIT"
+}
