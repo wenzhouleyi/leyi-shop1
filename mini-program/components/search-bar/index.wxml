@@ -1,0 +1,27 @@
+<!--
+  搜索栏组件
+  search-bar component
+-->
+<view class="search-bar {{customClass}}" style="{{customStyle}}">
+  <view class="search-input-wrap">
+    <image class="search-icon" src="/images/search_icon.png" mode="aspectFit" />
+    <input
+      class="search-input"
+      type="text"
+      value="{{value}}"
+      placeholder="{{placeholder || '搜索商品'}}"
+      placeholder-class="search-placeholder"
+      bindinput="onInput"
+      bindconfirm="onConfirm"
+      bindfocus="onFocus"
+      bindblur="onBlur"
+    />
+    <image 
+      class="clear-icon" 
+      src="/images/clear_icon.png" 
+      mode="aspectFit" 
+      wx:if="{{value}}" 
+      bindtap="onClear" 
+    />
+  </view>
+</view>
