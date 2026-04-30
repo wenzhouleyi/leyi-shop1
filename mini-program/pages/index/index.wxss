@@ -1,0 +1,140 @@
+.search-bar {
+  padding: 12rpx 24rpx;
+  background: #fff;
+}
+.search-input {
+  display: flex;
+  align-items: center;
+  background: #f5f6fa;
+  border-radius: 32rpx;
+  padding: 16rpx 24rpx;
+}
+.search-input .icon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+}
+.search-input .placeholder {
+  color: #999;
+  font-size: 28rpx;
+}
+
+.banner {
+  height: 320rpx;
+  margin: 16rpx 24rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+.banner-item {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.banner-text {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #1890ff;
+}
+
+.category-section {
+  background: #fff;
+  margin: 16rpx 24rpx;
+  border-radius: 16rpx;
+  padding: 24rpx;
+}
+.category-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+.category-item {
+  width: 25%;
+  text-align: center;
+  padding: 20rpx 0;
+}
+.category-icon {
+  font-size: 48rpx;
+  display: block;
+  margin-bottom: 8rpx;
+}
+.category-name {
+  font-size: 24rpx;
+  color: #333;
+}
+
+.promo-banner {
+  margin: 16rpx 24rpx;
+  background: linear-gradient(135deg, #1890ff, #40a9ff);
+  border-radius: 16rpx;
+  padding: 32rpx;
+  text-align: center;
+}
+.promo-text {
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 32rpx 24rpx 16rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+.title-line {
+  width: 60rpx;
+  height: 2rpx;
+  background: #1890ff;
+  margin: 0 16rpx;
+}
+
+.product-grid {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 16rpx;
+}
+.product-card {
+  width: calc(50% - 16rpx);
+  margin: 8rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+.product-img {
+  height: 280rpx;
+  background: #f5f6fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80rpx;
+}
+.product-info {
+  padding: 16rpx;
+}
+.product-name {
+  font-size: 26rpx;
+  color: #333;
+  line-height: 1.4;
+  height: 72rpx;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.product-price-row {
+  display: flex;
+  align-items: baseline;
+  margin-top: 12rpx;
+}
+.product-price {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #ff4d4f;
+}
+.product-original {
+  font-size: 24rpx;
+  color: #999;
+  text-decoration: line-through;
+  margin-left: 12rpx;
+}
