@@ -4,6 +4,9 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// 启动时自动初始化数据库
+require('./init-db');
+
 // 中间件
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -35,7 +38,8 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 温州乐翼电商系统已启动`);
+  console.log(`🚀 温州乐翼电商系统已启动，端口 ${PORT}`);
   console.log(`📱 前台: http://localhost:${PORT}/`);
   console.log(`🔐 后台: http://localhost:${PORT}/admin/login.html`);
+  console.log(`🔑 默认管理员: admin / admin123`);
 });
